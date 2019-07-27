@@ -1,6 +1,6 @@
 #' Search for Setlist
 #' @param apikey apikey
-#' @param setlist the show setlist in YYYY-MM-DD format
+#' @param showdate the show setlist in YYYY-MM-DD format
 #'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact

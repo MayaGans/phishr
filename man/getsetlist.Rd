@@ -9,7 +9,7 @@ get_setlist(apikey = NULL, showdate = NULL)
 \arguments{
 \item{apikey}{apikey}
 
-\item{setlist}{the show setlist in YYYY-MM-DD format}
+\item{showdate}{the show setlist in YYYY-MM-DD format}
 }
 \value{
 the results from the search
