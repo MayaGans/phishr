@@ -15,22 +15,25 @@
 #' @importFrom zoo na.locf
 #' @rdname getsetlist
 #'
-#' @return the results from the search
+#' @return the selected show from search
 #' @examples
 #' \dontrun{
-#' get_setlist(apikey = "<apikey>", showdate = "1999-12-31")
+#' BigCypressNYE <- get_setlist(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
 
-get_setlist <- function(apikey = NULL,
+get_setlist <- function(apikey,
                         showdate = NULL){
 
-  args <- list(apikey = apikey, showdate = showdate)
+  args <- list(apikey = apikey,
+               showdate = showdate)
 
   # Check that at least one argument is not null
   # stop_if_all(apikey, is.null, "You need to specify the API key!")
   # Chek for internet
   check_internet()
-  # Create the
+
+  # Create the API call based on supplied arguments
+
   res <- GET(
     paste0(
       base_url,
@@ -68,14 +71,14 @@ get_setlist <- function(apikey = NULL,
 
     # make into data frame
     set_html <- data.frame(set_html)
-    # call the song column Text
-    set_html$Text <- as.character(set_html$set_html)
+    # call the song column Song
+    set_html$Song <- as.character(set_html$set_html)
     set_html$set_html <- NULL
 
     # remove cells containing brackets, this is a vestage of show notes
     # remove cells only containing special characters
-    set_html <- filter(set_html, !grepl("\\[",set_html$Text))
-    set_html <- filter(set_html, !grepl("^:$",set_html$Text))
+    set_html <- filter(set_html, !grepl("\\[",set_html$Song))
+    set_html <- filter(set_html, !grepl("^:$",set_html$Song))
 
     # create a character string for song names
     # the easiest filter is that they should include all alphabetical characters
@@ -84,17 +87,17 @@ get_setlist <- function(apikey = NULL,
     boo <- c("[a-zA-Z]+", "1999", "555", "5:15")
 
     # now we can set our songs to true and the rest to false
-    set_html$Boolian <- grepl(paste(boo, collapse = "|"), set_html$Text)
+    set_html$Boolian <- grepl(paste(boo, collapse = "|"), set_html$Song)
 
     # now we can take the cells that were returned as false
     # and put those into a new column for segues
     ind.FALSE <- which(set_html$Boolian == FALSE)
     ind.CAT <- ind.FALSE - 1
 
-    set_html$Text[ind.CAT] <- paste(set_html$Text[ind.CAT], set_html$Text[ind.FALSE], sep = "__")
+    set_html$Song[ind.CAT] <- paste(set_html$Song[ind.CAT], set_html$Song[ind.FALSE], sep = "__")
     set_html <- filter(set_html, set_html$Boolian == TRUE)
-    set_html <- str_split_fixed(set_html$Text, "__", 2)
-    colnames(set_html) <- c("Text", "Segue")
+    set_html <- str_split_fixed(set_html$Song, "__", 2)
+    colnames(set_html) <- c("Song", "Segue")
 
     set_html <- data.frame(set_html)
 
@@ -107,9 +110,9 @@ get_setlist <- function(apikey = NULL,
       substr(x, nchar(x)-n+1, nchar(x))
     }
 
-    set_html$Set <- ifelse(substrRight(as.character(set_html$Text), 1) == ":", paste(set_html$Text), NA)
+    set_html$Set <- ifelse(substrRight(as.character(set_html$Song), 1) == ":", paste(set_html$Song), NA)
     set_html$Set <- na.locf(set_html$Set)
-    set_html <- filter(set_html, set_html$Text != set_html$Set)
+    set_html <- filter(set_html, set_html$Song != set_html$Set)
 
 
   } else {
