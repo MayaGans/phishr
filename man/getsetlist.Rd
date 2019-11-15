@@ -4,10 +4,11 @@
 \alias{get_setlist}
 \title{Search for Setlist}
 \usage{
-get_setlist(apikey, showdate = NULL)
+get_setlist(apikey = getOption("phishr_key"), showdate = NULL)
 }
 \arguments{
-\item{apikey}{apikey}
+\item{apikey}{Your key for the Phish.net API. This can also be stored
+as an option using \code{options('phishr_key') <- 'your_api_key'}.}
 
 \item{showdate}{the show setlist in YYYY-MM-DD format}
 }
@@ -21,4 +22,5 @@ Search for Setlist
 \dontrun{
 BigCypressNYE <- get_setlist(apikey = "<apikey>", showdate = "1999-12-31")
 }
+
 }

@@ -1,6 +1,6 @@
 #' Search for Setlist
-#' @param apikey apikey
-#' @param showdate the show setlist in YYYY-MM-DD format
+#'
+#' @inheritParams get_setlist
 #'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
@@ -13,15 +13,16 @@
 #' @importFrom dplyr filter
 #' @importFrom stringr str_split_fixed
 #' @importFrom zoo na.locf
-#' @rdname get_show_rating
 #'
 #' @return the selected show's rating
 #' @examples
 #' \dontrun{
 #' BigCypressNYE <- get_show_rating(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
+#' @export
+#' @rdname get_show_rating
 
-get_show_rating <- function(apikey,
+get_show_rating <- function(apikey = getOption('phishr_key'),
                            showdate = NULL){
 
   args <- list(apikey = apikey,
@@ -63,5 +64,4 @@ get_show_rating <- function(apikey,
   return(notes)
 }
 
-#' @export
-#' @rdname get_show_rating
+

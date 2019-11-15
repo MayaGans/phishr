@@ -1,5 +1,6 @@
 #' Search for Setlist
-#' @param apikey apikey
+#' @param apikey Your key for the Phish.net API. This can also be stored
+#' as an option using \code{options('phishr_key') <- 'your_api_key'}.
 #' @param showdate the show setlist in YYYY-MM-DD format
 #'
 #' @importFrom attempt stop_if_all
@@ -13,16 +14,19 @@
 #' @importFrom dplyr filter
 #' @importFrom stringr str_split_fixed
 #' @importFrom zoo na.locf
-#' @rdname getsetlist
 #'
 #' @return the selected show from search
 #' @examples
 #' \dontrun{
 #' BigCypressNYE <- get_setlist(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
+#'
+#' @export
+#' @rdname getsetlist
 
-get_setlist <- function(apikey,
-                        showdate = NULL){
+
+get_setlist <- function(apikey = getOption('phishr_key'),
+                        showdate = NULL) {
 
   args <- list(apikey = apikey,
                showdate = showdate)
@@ -122,5 +126,3 @@ get_setlist <- function(apikey,
   return(set_html)
 }
 
-#' @export
-#' @rdname getsetlist

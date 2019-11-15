@@ -4,10 +4,11 @@
 \alias{get_show_notes}
 \title{Search for Setlist}
 \usage{
-get_show_notes(apikey, showdate = NULL)
+get_show_notes(apikey = getOption("phishr_key"), showdate = NULL)
 }
 \arguments{
-\item{apikey}{apikey}
+\item{apikey}{Your key for the Phish.net API. This can also be stored
+as an option using \code{options('phishr_key') <- 'your_api_key'}.}
 
 \item{showdate}{the show setlist in YYYY-MM-DD format}
 }
