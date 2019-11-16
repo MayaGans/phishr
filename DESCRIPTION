@@ -9,17 +9,19 @@ Authors@R:
 Description: An API wrapper for the phish.net and phish.in website to extract
     setlist, rating, and jamchart data.
 License: MIT + file LICENSE
-URL: http://this
-BugReports: http://that
+URL: https://github.com/MayaGans/phishr
+BugReports: https://github.com/MayaGans/phishr/issues
 Imports: 
     attempt,
     curl,
+    dplyr,
+    ggplot2,
     httr,
     jsonlite,
     purrr,
-    textreadr,
-    dplyr,
+    rlang,
     stringr,
+    textreadr,
     zoo
 Encoding: UTF-8
 LazyData: true

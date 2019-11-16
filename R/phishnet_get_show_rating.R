@@ -1,5 +1,3 @@
-#' @inheritParams pn_get_setlist
-#'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON

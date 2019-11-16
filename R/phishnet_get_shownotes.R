@@ -1,10 +1,7 @@
-#' @inheritParams pn_get_setlist
-#'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
-#' @import jsonlite
 #' @importFrom textreadr read_html
 #' @importFrom dplyr filter
 #' @importFrom stringr str_split_fixed
