@@ -29,17 +29,19 @@
 
   if(!is.null(what_specifically)) {
 
-    if(what_specifically == 'all') {
+    if(what == 'years' &
+       what_specifically == 'all') {
 
-      # To get all songs, you just leave "/songs.json". For all others,
-      # we need to add the either the song ID or the slug (a modified form
-      # of the song's name). when song == 'all', the API has an additional
-      # parameter named include_song_counts. We'll automatically append this
+      # To get all songs, eras, tours, etc you just leave "/songs.json".
+      # when year == 'all', the API has an additional
+      # parameter named include_show_counts. Automatically append this
       # as it seems like info most would want to have.
+
       addl_params <- paste(addl_params, '&include_show_counts=true', sep = "")
 
     } else {
 
+      # This bit is pretty much exclusively to deal with the song and tour names.
       # song IDs get a / between the id and the song, ibid eras, etc.
       # song slugs (e.g. "You Enjoy Myself") get turned into "you-enjoy-myself"
 
@@ -89,6 +91,8 @@
 }
 
 
+# get_songs utils----------
+
 # Extracts information from song lists and converts to data frame for return.
 # Modify this to include or remove information returned for SPECIFIC songs. Edit
 # .all_songs_to_df to include or return information for ALL songs.
@@ -137,4 +141,84 @@
 
   return(out)
 
+}
+
+
+# get_years utils--------
+
+#' @noRd
+.year_list_to_df <- function(year_list) {
+
+  # Use lapply to create a list column with the complete setlist info for each
+  # show
+  setlists <- lapply(year_list,
+                     function(x) .song_list_to_df(x$tracks))
+
+  # vapply is typed so it's a bit quicker than lapply, and we already know
+  # exactly what to expect from each column
+
+  date     <- vapply(year_list,
+                     function(x) x$date,
+                     character(1L))
+
+  venue    <- vapply(year_list,
+                     function(x) x$venue$name,
+                     character(1L))
+
+  city     <- vapply(year_list,
+                     function(x) strsplit(x$venue$location,
+                                          split = ', ')[[1]][1],
+                     character(1L))
+  state    <- vapply(year_list,
+                     function(x) strsplit(x$venue$location,
+                                          split = ', ')[[1]][2],
+                     character(1L))
+
+  tour_id  <- vapply(year_list,
+                     function(x) x$tour_id,
+                     integer(1L))
+
+  duration <- vapply(year_list,
+                     function(x) x$duration / 60000,
+                     numeric(1L))
+
+  lat      <- vapply(year_list,
+                     function(x) x$venue$latitude,
+                     numeric(1L))
+  lon      <- vapply(year_list,
+                     function(x) x$venue$longitude,
+                     numeric(1L))
+
+  out <- data.frame(
+    date     = date,
+    city     = city,
+    state    = state,
+    venue    = venue,
+    lat      = lat,
+    lon      = lon,
+    tour_id  = tour_id,
+    duration = duration,
+    setlists = I(setlists)
+  )
+
+  return(out)
+
+}
+
+#' @noRd
+.all_years_to_df <- function(year_list) {
+
+  yrs     <- vapply(year_list,
+                    function(x) x$date,
+                    character(1L))
+
+  n_shows <- vapply(year_list,
+                    function(x) x$show_count,
+                    integer(1L))
+
+  out <- data.frame(year    = yrs,
+                    n_shows = n_shows,
+                    stringsAsFactors = FALSE)
+
+  return(out)
 }

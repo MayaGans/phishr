@@ -21,6 +21,10 @@
 #' this can be set to larger or smaller numbers.
 #' @param page The page of results to return.
 #'
+#' @details Note that for all Phish.in API calls that include year information,
+#' 1983 - 1987 are lumped together as a single entity. Specific dates are still
+#' available for shows and songs played in this time period.
+#'
 #' @rdname phish_dot_in
 #' @export
 
@@ -61,11 +65,15 @@ pi_get_song <- function(apikey   = getOption('phishin_key'),
 
     out <- .all_songs_to_df(data)
 
+    class(out) <- c('phishin_all_songs', 'data.frame')
+
   } else {
 
     out <- .song_list_to_df(data$tracks)
+    class(out) <- c('phishin_song', 'data.frame')
 
   }
+
   return(out)
 
 }

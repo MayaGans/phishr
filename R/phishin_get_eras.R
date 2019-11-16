@@ -1,9 +1,7 @@
 #' @param era The era you wish to get years for
-#' @inheritParams pi_get_song
 #'
 #' @rdname phish_dot_in
-#'
-
+#' @export
 
 pi_get_eras <- function(apikey   = getOption('phishin_key'),
                         era      = NULL,
@@ -61,6 +59,8 @@ pi_get_eras <- function(apikey   = getOption('phishin_key'),
 
     out <- do.call(rbind, out)
   }
+
+  class(out) <- c('phishin_era', 'data.frame')
 
   return(out)
 
