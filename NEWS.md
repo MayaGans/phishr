@@ -1,3 +1,3 @@
-# phishr 0.1
+# phishr 0.1.0.9000
 
-* Added a `NEWS.md` file to track changes to the package.
+* Added _extremely_ experimental connection to phish.in API!
