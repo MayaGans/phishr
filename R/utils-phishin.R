@@ -286,3 +286,26 @@
   )
 
 }
+
+
+# get_venues utils-------
+
+.venue_list_to_df <- function(venue_list) {
+
+  data.frame(
+    name             = venue_list$name,
+    api_name         = venue_list$slug,
+    other_names      = I(list(venue_list$other_names)),
+    venue_id         = venue_list$id,
+    lat              = venue_list$latitude,
+    lon              = venue_list$longitude,
+    city             = venue_list$city,
+    state            = venue_list$state,
+    country          = venue_list$country,
+    n_shows          = venue_list$shows_count,
+    dates            = I(list(venue_list$show_dates)),
+    show_ids         = I(list(venue_list$show_ids)),
+    stringsAsFactors = FALSE
+  )
+
+}
