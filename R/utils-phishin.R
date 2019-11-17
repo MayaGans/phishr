@@ -29,8 +29,7 @@
 
   if(!is.null(what_specifically)) {
 
-    if(what == 'years' &
-       what_specifically == 'all') {
+    if(what_specifically == 'all') {
 
       # To get all songs, eras, tours, etc you just leave "/songs.json".
       # when year == 'all', the API has an additional
@@ -43,7 +42,8 @@
 
       # This bit is pretty much exclusively to deal with the song and tour names.
       # song IDs get a / between the id and the song, ibid eras, etc.
-      # song slugs (e.g. "You Enjoy Myself") get turned into "you-enjoy-myself"
+      # song titles (e.g. "You Enjoy Myself") get turned into slugs
+      # "you-enjoy-myself"
 
       # to handle Santos/5:15/etc, we need to replace punctuation as well.
       what_specifically <- gsub('\\.', '-', what_specifically)
@@ -51,6 +51,8 @@
       what_specifically <- gsub("\\'", '-', what_specifically)
 
       what_specifically <- gsub(" ", "-", tolower(what_specifically))
+
+      # finally, if what_specifically == 'all'
 
       what <- paste(what, what_specifically, sep = "/")
 
@@ -198,7 +200,8 @@
     lon      = lon,
     tour_id  = tour_id,
     duration = duration,
-    setlists = I(setlists)
+    setlists = I(setlists),
+    stringsAsFactors = FALSE
   )
 
   return(out)
@@ -221,4 +224,65 @@
                     stringsAsFactors = FALSE)
 
   return(out)
+}
+
+
+# get_tours utils ----------
+
+#'@noRd
+.tour_list_to_df <- function(tour_list) {
+
+  terr_nm   <- unique(tour_list$name)
+  terr_slug <- unique(tour_list$slug)
+  terr_beg  <- unique(tour_list$starts_on)
+  terr_end  <- unique(tour_list$ends_on)
+
+  shows     <- lapply(tour_list$shows,
+                      .show_list_to_df)
+
+  all_shows <- do.call(rbind, shows)
+
+  out <- cbind(tour_name  = terr_nm,
+               api_name   = terr_slug,
+               tour_start = terr_beg,
+               tour_end   = terr_end,
+               all_shows,
+               stringsAsFactors = FALSE)
+
+  return(out)
+
+}
+
+#' @noRd
+.all_tours_to_df <- function(tour_list) {
+
+  all_terr_list <- lapply(tour_list,
+                          .tour_list_to_df)
+
+  do.call(rbind, all_terr_list)
+
+
+}
+
+#' @noRd
+.show_list_to_df <- function(show_list) {
+
+  city  <- strsplit(show_list$location, ', ')[[1]][1]
+  state <- strsplit(show_list$location, ', ')[[1]][2]
+
+  data.frame(
+    date             = show_list$date,
+    city             = city,
+    state            = state,
+    venue            = show_list$venue_name,
+    tour_id          = show_list$tour_id,
+    show_id          = show_list$id,
+    duration         = show_list$duration / 60000,
+    likes            = show_list$likes_count,
+    soundboard       = show_list$sbd,
+    remasterd        = show_list$remastered,
+    complete_show    = !show_list$incomplete,
+    stringsAsFactors = FALSE
+  )
+
 }
