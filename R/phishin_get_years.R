@@ -43,12 +43,10 @@ pi_get_years <- function(apikey   = getOption('phishin_key'),
   if(year == 'all') {
 
     out <- .all_years_to_df(data)
-    class(out) <- c('phishin_all_years', 'data.frame')
 
   } else {
 
     out <- .year_list_to_df(data)
-    class(out) <- c('phishin_year', 'data.frame')
 
   }
 

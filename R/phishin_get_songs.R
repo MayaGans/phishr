@@ -65,12 +65,10 @@ pi_get_song <- function(apikey   = getOption('phishin_key'),
 
     out <- .all_songs_to_df(data)
 
-    class(out) <- c('phishin_all_songs', 'data.frame')
 
   } else {
 
     out <- .song_list_to_df(data$tracks)
-    class(out) <- c('phishin_song', 'data.frame')
 
   }
 
