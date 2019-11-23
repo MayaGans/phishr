@@ -21,7 +21,7 @@ for more information on how to obtain one.}
 \item{showdate}{the show setlist in YYYY-MM-DD format}
 }
 \value{
-the selected show's rating, setlist, or notes.
+the selected show's rating, setlist, or notes as a \code{data.frame}.
 }
 \description{
 The \code{phish.net} API contains a vast amount of information.
@@ -30,11 +30,12 @@ API - all are prefixed with \code{pn_*}
 }
 \details{
 Accessing the Phish.Net API requires an API key. These can be obtained
-at the following link: \link{http://api.phish.net/keys/}. First, you'll need
-to create a username and password. After confirming your this information, you
-can follow the link above to create an API key. Once approved, store the private
-key somewhere that it is easily retrieved, and use it in the \code{apikey}
-argument to each \code{pn_*} function.
+by following the steps at \href{http://api.phish.net/keys/}{Phish.net API keys}.
+First, you'll need to create a username and password. After confirming your
+this information, you can follow the link above to create an API key. Once
+approved, store the private key somewhere that it is easily retrieved, and
+use it in the \code{apikey} argument to each \code{pn_*} function. Alternatively,
+you can set a \code{option(phishnet_key = '<your-key'>)} in your .Rprofile.
 }
 \examples{
 \dontrun{
