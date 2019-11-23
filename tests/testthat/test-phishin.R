@@ -1,4 +1,4 @@
-context('phish.in songs')
+context('phish.in API tests')
 
 test_that('pi_get_song is working', {
 
@@ -7,16 +7,16 @@ test_that('pi_get_song is working', {
 
   apikey <- readRDS('phishin_key.rds')
 
-  you_enjoy_mytest <- pi_get_song(song = 'you enjoy myself',
+  you_enjoy_mytest <- pi_get_songs(song = 'you enjoy myself',
                                   apikey = apikey)
 
   expect_true(inherits(you_enjoy_mytest, 'data.frame'))
 
-  check_punct <- list(colon = pi_get_song(song = "5:15",
+  check_punct <- list(colon = pi_get_songs(song = "5:15",
                                           apikey = apikey),
-                      apost = pi_get_song(song = "mike's song",
+                      apost = pi_get_songs(song = "mike's song",
                                           apikey = apikey),
-                      perio = pi_get_song(song = 'say it to me s.a.n.t.o.s',
+                      perio = pi_get_songs(song = 'say it to me s.a.n.t.o.s',
                                           apikey = apikey))
 
   test_class_vec <- vapply(check_punct,
@@ -33,8 +33,8 @@ test_that('pi_get_song is working', {
 
   # Make sure song = "all" isn't broken
 
-  all_the_glory <- pi_get_song(song = 'all',
-                               apikey = apikey)
+  all_the_glory <- pi_get_songs(song = 'all',
+                                apikey = apikey)
 
   # dim should be 20 provided the phish.in API default doesn't change
 
@@ -91,6 +91,8 @@ test_that('pi_get_years is working', {
 
 test_that('pi_get_eras is working', {
 
+  skip_on_cran()
+  skip_on_travis()
   apikey <- readRDS('phishin_key.rds')
 
   eras <- pi_get_eras(apikey = apikey) # all eras
@@ -115,4 +117,79 @@ test_that('pi_get_eras is working', {
 
 })
 
+test_that('pi_get_venues is working', {
 
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+
+  alpine <- pi_get_venues(apikey = apikey,
+                          venue = 'Alpine Valley Music Theatre')
+
+
+  expect_true(inherits(alpine$dates, 'AsIs'))
+  expect_equal(alpine$lat, 42.79, tol = 10e-2)
+
+  all_venues <- pi_get_venues(apikey = apikey)
+
+  expect_true(dim(all_venues)[2] == 12)
+
+})
+
+test_that('pi_get_tours is working', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  all_tours <- pi_get_tours(apikey = apikey)
+
+  expect_true(dim(all_tours)[2] == 15)
+  expect_true(all_tours$venue[1] == "Harris-Millis Cafeteria, University of Vermont")
+
+  use_terr <- all_tours$api_name[7] # 1985 tour
+
+  single_tour <- pi_get_tours(apikey = apikey,
+                              tour = use_terr)
+
+  expect_true(dim(single_tour)[1] == 6)
+  expect_true(all(single_tour$soundboard))
+
+
+})
+
+test_that('pi_get_shows is working', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  test_show <- pi_get_shows(apikey = apikey,
+                            show = '2009-06-07')
+
+  # My first song!
+  expect_true(test_show$set_list[[1]]$title[1] == 'Chalk Dust Torture')
+  expect_true(dim(test_show)[2] == 16)
+
+})
+
+test_that('pi_get_dates is working', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  nye <- pi_get_dates(apikey = apikey,
+                      date = '12-31')
+
+  expect_true(dim(nye)[2] == 16)
+
+  # dates w/ only one show (so far)
+
+  singleton <- pi_get_dates(apikey = apikey,
+                            date = '01-04')
+
+  expect_true(dim(singleton)[1] == 1)
+
+})
