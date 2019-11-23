@@ -238,7 +238,7 @@
   terr_end  <- unique(tour_list$ends_on)
 
   shows     <- lapply(tour_list$shows,
-                      .show_list_to_df)
+                      .tour_show_list_to_df)
 
   all_shows <- do.call(rbind, shows)
 
@@ -265,7 +265,7 @@
 }
 
 #' @noRd
-.show_list_to_df <- function(show_list) {
+.tour_show_list_to_df <- function(show_list) {
 
   city  <- strsplit(show_list$location, ', ')[[1]][1]
   state <- strsplit(show_list$location, ', ')[[1]][2]
@@ -305,6 +305,37 @@
     n_shows          = venue_list$shows_count,
     dates            = I(list(venue_list$show_dates)),
     show_ids         = I(list(venue_list$show_ids)),
+    stringsAsFactors = FALSE
+  )
+
+}
+
+# get_shows utils-------
+
+.show_list_to_df <- function(show) {
+
+  venue <- data.frame(
+    id = show$venue$id,
+    name = show$venue$name,
+    api_name = show$venue$slug,
+    other_names = I(list(show$venue$other_names)),
+    city = strsplit(show$venue$location, ', ')[[1]][1],
+    state = strsplit(show$venue$location, ', ')[[1]][2],
+    lat = show$venue$latitude,
+    lon = show$venue$longitude,
+    n_shows = show$venue$shows_count,
+    stringsAsFactors = FALSE
+  )
+
+  data.frame(
+    date = show$date,
+    venue,
+    duration = show$duration / 60000,
+    soundboard = show$sbd,
+    complete_show = !show$incomplete,
+    tags = I(list(show$tags)),
+    tour_id = show$tour_id,
+    set_list = I(list(.song_list_to_df(show$tracks))),
     stringsAsFactors = FALSE
   )
 

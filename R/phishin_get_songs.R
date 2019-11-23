@@ -21,19 +21,25 @@
 #' this can be set to larger or smaller numbers.
 #' @param page The page of results to return.
 #'
-#' @details Note that for all Phish.in API calls that include year information,
+#' @details API keys can be obtained using the
+#' \href{https://phish.in/contact-info}{contact form} on the API's
+#' website. Once obtained, use it in the \code{apikey} argument to each
+#' \code{pi_*} function. Alternatively, you can set a
+#' \code{option(phishin_key = '<your-key'>)} in your .Rprofile.
+#'
+#' Note that for all Phish.in API calls that include year information,
 #' 1983 - 1987 are lumped together as a single entity. Specific dates are still
 #' available for shows and songs played in this time period.
 #'
 #' @rdname phish_dot_in
 #' @export
 
-pi_get_song <- function(apikey   = getOption('phishin_key'),
-                        song     = NULL,
-                        sort_dir = 'descending',
-                        sort_atr = 'name',
-                        per_page = 20,
-                        page     = 1
+pi_get_songs <- function(apikey   = getOption('phishin_key'),
+                         song     = NULL,
+                         sort_dir = 'descending',
+                         sort_atr = 'name',
+                         per_page = 20,
+                         page     = 1
 ) {
 
   # Check that at least one argument is not null
