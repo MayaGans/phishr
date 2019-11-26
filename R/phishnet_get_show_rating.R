@@ -1,31 +1,22 @@
-#' Search for Setlist
-#' @param apikey apikey
-#' @param showdate the show setlist in YYYY-MM-DD format
-#'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET
-#' @export
 #' @import jsonlite
 #' @importFrom textreadr read_html
-#' @import httr
 #' @importFrom dplyr filter
 #' @importFrom stringr str_split_fixed
 #' @importFrom zoo na.locf
-#' @rdname get_show_rating
 #'
-#' @return the selected show's rating
 #' @examples
 #' \dontrun{
 #' BigCypressNYE <- get_show_rating(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
+#' @export
+#' @rdname phish_dot_net
 
-get_show_rating <- function(apikey,
+pn_get_show_rating <- function(apikey = getOption('phishnet_key'),
                            showdate = NULL){
-
-  args <- list(apikey = apikey,
-               showdate = showdate)
 
   # Check that at least one argument is not null
   # stop_if_all(apikey, is.null, "You need to specify the API key!")
@@ -34,14 +25,15 @@ get_show_rating <- function(apikey,
 
   # Create the API call based on supplied arguments
 
-  res <- GET(
+  res <- httr::GET(
     paste0(
-      base_url,
+      pn_base_url,
       "setlists/get?apikey=",
       apikey,
       "&showdate=",
       showdate,
-      sep=""))
+      sep = "")
+    )
 
   # Check the result
   check_status(res)
@@ -63,5 +55,4 @@ get_show_rating <- function(apikey,
   return(notes)
 }
 
-#' @export
-#' @rdname get_show_rating
+

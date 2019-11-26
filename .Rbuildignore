@@ -3,3 +3,4 @@
 ^data-raw$
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
+^tests/testthat/phishin_key\.rds$
