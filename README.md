@@ -12,6 +12,25 @@ This is a package to extract data from the Phish.net and phish.in APIs! You can 
  * Tours (.in only)
  * Venues (.in only)
  * Tags (.in only, used to highlight specific content, see [here](https://phish.in/tags) for more details)
+ 
+ 
+ # Example:
+ I want to learn about 1999-12-31
+ 
+```
+# Request API key from https://api.phish.net/keys/
+# Store key as string
+phishnet_apikey <- "XXX"
+ 
+# Get a dataframe of songs, segues, and set songs were played in
+phishr::pn_get_setlist(phishnet_key, "1999-12-31")
+
+# Get the show notes 
+phishr::pn_get_show_notes(phishnet_key, "1999-12-31")
+
+# Get the show rating
+phishr::pn_get_show_rating(phishnet_key, "1999-12-31")
+ ```
 
 Please (so that we have no regrets), note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.
