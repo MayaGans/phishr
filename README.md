@@ -15,7 +15,7 @@ This is a package to extract data from the Phish.net and phish.in APIs! You can 
  
  
  # Example:
- I want to learn about 1999-12-31
+What's the deal with Big Cypress?
  
 ```
 # Request API key from https://api.phish.net/keys/
