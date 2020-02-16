@@ -172,6 +172,13 @@ test_that('pi_get_shows is working', {
   expect_true(test_show$set_list[[1]]$title[1] == 'Chalk Dust Torture')
   expect_true(dim(test_show)[2] == 16)
 
+  sbd_only <- pi_get_shows(apikey = apikey,
+                           show = 'all',
+                           sbd_only = TRUE)
+
+  # The first sbd show returned *should* always be the same
+  expect_equal(sbd_only$date[1], '1985-10-30')
+
 })
 
 test_that('pi_get_dates is working', {
@@ -191,5 +198,58 @@ test_that('pi_get_dates is working', {
                             date = '01-04')
 
   expect_true(dim(singleton)[1] == 1)
+
+})
+
+
+test_that('pi_random_show works', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  rand_show <- pi_get_random_show(apikey = apikey)
+
+  expect_equal(dim(rand_show), c(1, 16))
+
+})
+
+test_that('pi_get_tracks works', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  rand_track <- pi_get_tracks(apikey = apikey,
+                              track = 42)
+
+  expect_equal(dim(rand_track), c(1, 7))
+
+  # Test no tags case
+
+  rand_track <- pi_get_tracks(apikey = apikey,
+                              track  = 1230)
+
+  expect_true(is.na(rand_track$tags[[1]]))
+  expect_equal(dim(rand_track), c(1, 7))
+
+})
+
+test_that('pi_get_tags works', {
+
+  skip_on_cran()
+  skip_on_travis()
+  apikey <- readRDS('phishin_key.rds')
+
+  some_tags <- pi_get_tags(apikey = apikey)
+
+  expect_true(all(is.na(some_tags$tracks)))
+  expect_true(all(is.character(some_tags$api_name)))
+
+  alt_rigs <- pi_get_tags(tag    = "Alt Rig",
+                          apikey = apikey)
+
+  expect_equal(dim(alt_rigs), c(1, 4))
+
 
 })
