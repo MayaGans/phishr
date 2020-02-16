@@ -9,7 +9,13 @@
                      sort_dir,
                      sort_atr,
                      per_page,
+                     sbd_only = FALSE,
                      page) {
+
+  .pi_validate_params(sort_dir,
+                      sort_atr,
+                      per_page,
+                      page)
 
   heads <- httr::add_headers(
     Accept        = 'application/json',
@@ -23,9 +29,21 @@
                                   per_page = per_page,
                                   page     = page)
 
-  # additional parameters (e.g. sorting require a "?" after the .json)
+  # Tracks and Shows can accept a sbd only parameter denoting requests to only
+  # return soundboards. append that here.
 
-  if(addl_params != "") q_mark <- TRUE
+  if(what %in% c('shows', 'tracks') && sbd_only) {
+    addl_params <- paste('tag=sbd', addl_params, sep = "&")
+  }
+
+  # additional parameters (e.g. sorting) require a "?" after the .json. There
+  # should almost always be some addl_params, unless it's pi_get_random_show()
+
+  if(addl_params != "") {
+    q_mark <- TRUE
+  } else {
+    q_mark <- FALSE
+  }
 
   if(!is.null(what_specifically)) {
 
@@ -37,6 +55,7 @@
       # as it seems like info most would want to have.
 
       addl_params <- paste(addl_params, '&include_show_counts=true', sep = "")
+
 
     } else {
 
@@ -338,5 +357,95 @@
     set_list = I(list(.song_list_to_df(show$tracks))),
     stringsAsFactors = FALSE
   )
+
+}
+
+
+#' @noRd
+# Returns the 7 columns here to match up with pi_get_songs(). However, there
+# is more information in the "track" object that might be useful. Modify as needed
+# to get what you want.
+#
+# names(track) = c("id", "show_id", "show_date", "title", "position", "duration",
+#                  "jam_starts_at_second", "set", "set_name", "likes_count", "slug",
+#                  "tags", "mp3", "song_ids", "updated_at")
+
+.track_list_to_df <- function(track) {
+
+  # If there aren't any tags, insert an NA so that the list-column has the same
+  # length as the other vectors in the "out" object. Otherwise, error on df creation.
+
+  if(length(track$tags) == 0) {
+
+    tag_list <- list(NA)
+
+  } else {
+
+    tag_list <- lapply(track$tags, function(x) x)
+
+  }
+
+  out <- data.frame(date     = track$show_date,
+                    title    = track$title,
+                    position = track$position,
+                    set      = track$set,
+                    duration = track$duration / 60000,
+                    likes_ct = track$likes_count,
+                    tags     = I(tag_list),
+                    stringsAsFactors = FALSE
+  )
+
+  return(out)
+
+}
+
+#' @noRd
+.all_tags_to_df <- function(tags) {
+
+  out <- data.frame(name        = vapply(tags,
+                                         function(x) x$name,
+                                         character(1L)),
+                    api_name    = vapply(tags,
+                                         function(x) x$slug,
+                                         character(1L)),
+                    description = vapply(tags,
+                                         function(x) x$description,
+                                         character(1L)),
+                    tracks      = NA_integer_,
+                    stringsAsFactors = FALSE)
+
+  return(out)
+
+}
+
+#' @noRd
+.tag_list_to_df <- function(tags) {
+
+  # list(unlist(track_ids)) converts this to a list column holding a single
+  # vector, as opposed to a list of lists with a single integer in each entry
+
+  out <- data.frame(name        = tags$name,
+                    api_name    = tags$slug,
+                    description = tags$description,
+                    tracks      = I(list(unlist(tags$track_ids))),
+                    stringsAsFactors = FALSE)
+
+  return(out)
+
+}
+
+#' @noRd
+
+# A couple tests to make sure nothing nefarious is afoot
+.pi_validate_params <- function(sort_dir,
+                                sort_atr,
+                                per_page,
+                                page) {
+
+  if(!is.null(sort_dir)) stopifnot(tolower(sort_dir) %in% c("asc", "desc"))
+
+  if(!is.null(per_page)) stopifnot(is.integer(per_page)|| is.double(per_page))
+  if(!is.null(page))     stopifnot(is.integer(page)|| is.double(per_page))
+  if(!is.null(sort_atr)) stopifnot(tolower(sort_atr) %in% c('date', 'name'))
 
 }

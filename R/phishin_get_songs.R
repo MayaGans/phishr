@@ -19,7 +19,8 @@
 #' @param sort_atr the attribute to sort on. "date", "name", etc
 #' @param per_page The number of results per page. The API's default is 20, but
 #' this can be set to larger or smaller numbers.
-#' @param page The page of results to return.
+#' @param page The page of results to return. For some functions, this may be overridden as
+#' there's only 1 page available.
 #'
 #' @details API keys can be obtained using the
 #' \href{https://phish.in/contact-info}{contact form} on the API's
