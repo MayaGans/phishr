@@ -3,6 +3,8 @@
 #' @param show Either an integer show ID (obtainable through \code{pi_get_tours},
 #' \code{pi_get_songs}, etc) OR a specific date as a character string with
 #' "YYYY-MM-DD" format.
+#' @param sbd_only Logical indicating whether or not to only return information
+#' for shows with soundboards (e.g. tag = \code{sbd}).
 #' @param play_show logical indicating whether to navigate to the phish.in
 #' url and start playing the show. Default is \code{FALSE}. Must supply a
 #' \code{show} for this to be \code{TRUE}
@@ -16,6 +18,7 @@ pi_get_shows <- function(apikey    = getOption('phishin_key'),
                          sort_atr  = 'name',
                          per_page  = 20,
                          page      = 1,
+                         sbd_only  = FALSE,
                          play_show = FALSE
 ) {
 
@@ -52,13 +55,14 @@ pi_get_shows <- function(apikey    = getOption('phishin_key'),
                   sort_dir          = sort_dir,
                   sort_atr          = sort_atr,
                   per_page          = per_page,
+                  sbd_only          = sbd_only,
                   page              = page)
 
   if(res$status_code != 200) stop("Something went wrong\nStatus code: ",
                                   res$status_code)
   data <- httr::content(res)$data
 
-  if(!is.null(show)) {
+  if(!is.null(names(data))) {
 
     out <- .show_list_to_df(data)
 

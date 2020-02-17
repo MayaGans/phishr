@@ -2,10 +2,16 @@ Package: phishr
 Title: Phish Related API Wrappers
 Version: 0.1.0.9000
 Authors@R: 
+    c(
     person(given = "Maya",
            family = "Gans",
            role = c("cre", "aut"),
-           email = "jaffe.maya@gmail.com")
+           email = "jaffe.maya@gmail.com"),
+    person(given = "Sam",
+           family = "Levin",
+           role = c("aut"),
+           email = "levisc8@gmail.com")
+    )
 Description: An API wrapper for the phish.net and phish.in website to extract
     setlist, rating, and jamchart data.
 License: MIT + file LICENSE
@@ -25,6 +31,6 @@ Imports:
     zoo
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2
 Suggests: 
     testthat
