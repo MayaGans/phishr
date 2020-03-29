@@ -45,6 +45,12 @@ pi_get_venues <- function(apikey   = getOption('phishin_key'),
 
   }
 
-  return(out)
+  return(
+    out %>%
+      select(-c(other_names)) %>%
+      rowwise %>%
+      summarise_all(~ list(unlist(.))) %>%
+      unnest(cols = everything())
+    )
 
 }
