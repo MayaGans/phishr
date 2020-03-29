@@ -4,6 +4,7 @@
 #' @importFrom stringr regex str_detect
 #' @importFrom purrr map2
 #' @importFrom magrittr %>%
+#' @export
 
 pn_get_setlist2 <- function(apikey = getOption('phishnet_key'),
                            showdate = NULL) {
