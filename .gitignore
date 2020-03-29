@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 tests/testthat/phishin_key.rds
+.DS_Store
