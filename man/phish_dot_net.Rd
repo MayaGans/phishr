@@ -4,14 +4,11 @@
 %   R/phishnet_get_shownotes.R
 \name{pn_get_setlist}
 \alias{pn_get_setlist}
-\alias{pn_get_setlist2}
 \alias{pn_get_show_rating}
 \alias{pn_get_show_notes}
 \title{Query the Phish.Net API}
 \usage{
 pn_get_setlist(apikey = getOption("phishnet_key"), showdate = NULL)
-
-pn_get_setlist2(apikey = getOption("phishnet_key"), showdate = NULL)
 
 pn_get_show_rating(apikey = getOption("phishnet_key"), showdate = NULL)
 
