@@ -1,5 +1,7 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
+<img align="right" width="100" height="110" src="phishr_hex.png">
+
 ## phishr
  
 This is a package to extract data from the Phish.net and phish.in APIs! You can use this package to search for Phish data for:
