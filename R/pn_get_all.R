@@ -48,7 +48,23 @@ pn_get_all_venues <- function(key) {
   )
 
   cont <- httr::content(res)
+  html_string <- as.character(cont)
 
-  purrr::map_dfr(cont$data, ~as.data.frame(t(.)))
+  extract_td <- function(tr) {
+    regmatches(tr, gregexpr("(?<=<td>).*?(?=</td>)", tr, perl = TRUE))[[1]]
+  }
+
+  tr_matches <- regmatches(html_string, gregexpr("<tr>.*?</tr>", html_string))[[1]]
+  td_content <- lapply(tr_matches, extract_td)
+
+  td_content[[1]]
+
+  purrr::map(td_content, ~data.frame(
+    name = .x[2],
+    city = .x[3],
+    state = .x[4],
+    country = .x[5]
+  )) |>
+    purrr::reduce(dplyr::bind_rows)
 
 }
