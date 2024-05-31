@@ -32,7 +32,7 @@ pn_get_setlist <- function(apikey = getOption('phishnet_key'),
   check_status(res)
   cont <- httr::content(res)
 
-  if (is.null(nrow(cont))) stop(paste0("\n No show data for ", showdate))
+  if (length(cont$data) == 0) stop(paste0("\n No show data for ", showdate))
 
   purrr::map_dfr(cont$data, ~as.data.frame(t(.)))
 

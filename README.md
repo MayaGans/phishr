@@ -28,7 +28,7 @@ devtools::install_github("MayaGans/phishr")
 ### Request and set API Key
 ```{r}
 # Request API key from https://api.phish.net/keys/
-# Store key as string
+# Store key as string or add to .Renvironment
 phishnet_apikey <- "XXX"
 ```
 
