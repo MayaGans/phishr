@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-tests/testthat/phishin_key.rds
+.Renviron
 .DS_Store
+data-raw/data.RDS

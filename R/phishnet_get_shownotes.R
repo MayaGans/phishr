@@ -2,7 +2,6 @@
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON
 #' @importFrom httr GET content
-#' @importFrom textreadr read_html
 #' @importFrom dplyr filter
 #' @importFrom stringr str_split_fixed
 #' @importFrom zoo na.locf

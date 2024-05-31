@@ -1,6 +1,6 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
-<img align="right" width="100" height="110" src="phishr_hex.png">
+<img align="right" width="100" height="110" src="man/phishr_hex.png">
 
 ## phishr
  
