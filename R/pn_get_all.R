@@ -48,16 +48,8 @@ pn_get_all_venues <- function(key) {
   )
 
   cont <- httr::content(res)
-  html_string <- as.character(cont)
 
-  extract_td <- function(tr) {
-    regmatches(tr, gregexpr("(?<=<td>).*?(?=</td>)", tr, perl = TRUE))[[1]]
-  }
-
-  tr_matches <- regmatches(html_string, gregexpr("<tr>.*?</tr>", html_string))[[1]]
-  td_content <- lapply(tr_matches, extract_td)
-
-  td_content[[1]]
+  td_content <- make_list_from_html(cont)
 
   purrr::map(td_content, ~data.frame(
     name = .x[2],
