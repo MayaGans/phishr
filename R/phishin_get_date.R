@@ -4,7 +4,7 @@
 #'
 #' @export
 
-pi_get_dates <- function(date = NULL) {
+pi_get_show_by_date <- function(date = NULL) {
 
   endpoint <- sprintf("https://phish.in/api/v2/shows/%s", tolower(date))
   response <- GET(endpoint)

@@ -5,7 +5,7 @@
 #' @return A data frame with performance details
 #' @export
 
-pi_get_tracks <- function(song_name = "Possum", per_page = 100) {
+pi_get_all_times_played <- function(song_name = "Possum", per_page = 100) {
 
   song_slug <- gsub(" ", "-", tolower(song_name))
   all_tracks <- list()

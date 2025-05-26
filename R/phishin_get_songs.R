@@ -1,33 +1,68 @@
-#' @title Query the Phish.in API
+#' @title Get All Songs
+#'
+#' @returns a data.frame with the slug, names,
+#' original artist, and times played of each song!
 #'
 #' @description The \code{phish.in} API contains a vast amount of information.
 #' The functions here are specific to each type of query that can be sent to the
 #' API - all are prefixed with \code{pi_*}
-
-#' @param song Either the name of a song or \code{"all"}. It appears that the
-#' API does not support requests for more than one song at a time, so looping
-#' over names is required. When \code{song = "all"}, a data frame of song names
-#' and the number of times played is returned. When \code{song = "some song name"},
-#' a data frame of dates played, show song positions, set positions, durations,
-#' number of likes, and a list column of any tags associated with the perforamnce
-#' is returned.
-#'
-#' Note that for all Phish.in API calls that include year information,
-#' 1983 - 1987 are lumped together as a single entity. Specific dates are still
-#' available for shows and songs played in this time period.
 #'
 #' @export
 
-pi_get_songs <- function(song) {
+pi_get_all_songs <- function(per_page = 1000) {
 
-  endpoint <- sprintf("https://phish.in/api/v2/songs/%s", tolower(song))
+  endpoint <- sprintf("https://phish.in/api/v2/songs")
   response <- GET(endpoint)
+  all_songs <- list()
 
-  if (status_code(response) == 200) {
-    data <- content(response, as = "parsed", type = "application/json")
-    return(data)
-  } else {
-    stop("Request failed with status code: ", status_code(response))
+  # Initial request to get total_pages
+  first_url <- sprintf(
+    "https://phish.in/api/v2/tracks?page=1&per_page=%d&sort=date:asc",
+    per_page
+  )
+
+  first_response <- GET(first_url)
+
+  if (status_code(first_response) != 200) {
+    stop("Initial request failed.")
   }
+
+  first_content <- content(first_response, as = "parsed", type = "application/json")
+  total_pages <- first_content$total_pages
+
+  # Loop over all pages
+  for (page in 1:total_pages) {
+
+    url <- sprintf(
+      "https://phish.in/api/v2/tracks?page=%d&per_page=%d&sort=date:asc",
+      page, per_page
+    )
+
+    response <- GET(url)
+
+    if (status_code(response) != 200) {
+      warning(sprintf("Failed on page %d", page))
+      next
+    }
+
+    songs <- content(response, as = "parsed", type = "application/json")$tracks
+
+    songs_df <- map_dfr(songs, function(track) {
+
+      song <- track$songs[[1]]
+
+      tibble(
+        slug = song$slug,
+        title = song$title,
+        artist = song$artist %||% 'Phish',
+        tracks_count = song$tracks_count
+      )
+    })
+
+    all_songs[[page]] <- songs_df
+  }
+
+  # Combine all pages into a single dataframe
+  return(bind_rows(all_songs))
 
 }
