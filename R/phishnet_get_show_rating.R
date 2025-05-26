@@ -12,7 +12,6 @@
 #' BigCypressNYE <- get_show_rating(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
 #' @export
-#' @rdname phish_dot_net
 
 pn_get_show_rating <- function(apikey = getOption('phishnet_key'),
                            showdate = NULL){
