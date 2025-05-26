@@ -16,6 +16,7 @@
 #' 1983 - 1987 are lumped together as a single entity. Specific dates are still
 #' available for shows and songs played in this time period.
 #'
+#' @export
 
 pi_get_songs <- function(song) {
 

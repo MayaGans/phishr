@@ -11,7 +11,6 @@
 #' BigCypressNYE <- get_show_notes(apikey = "<apikey>", showdate = "1999-12-31")
 #' }
 #' @export
-#' @rdname phish_dot_net
 
 pn_get_show_notes <- function(apikey = getOption('phishnet_key'),
                         showdate = NULL){

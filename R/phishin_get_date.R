@@ -1,6 +1,7 @@
+#' Get show using the date from the phish.in API
+#'
 #' @param date The date you wish to get show info for. Format as \code{'YYYY-MM-DD'}
 #'
-#' @rdname phish_dot_in
 #' @export
 
 pi_get_dates <- function(date = NULL) {
