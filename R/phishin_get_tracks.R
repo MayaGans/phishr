@@ -1,49 +1,64 @@
-#' @param track The integer ID for a track. Refers to a specific version of a song.
-#'
-#' @rdname phish_dot_in
+#' @title Query the Phish.in API for all performances of a song
+#' @description Returns metadata about every time a given song was performed.
+#' @param song_name Name of the song, e.g. "Possum"
+#' @param per_page Results per page (max 100 recommended)
+#' @return A data frame with performance details
 #' @export
 
-pi_get_tracks <- function(apikey   = getOption('phishin_key'),
-                          track     = NULL,
-                          sort_dir = 'descending',
-                          sort_atr = 'name',
-                          per_page = 20,
-                          page     = 1,
-                          sbd_only  = FALSE
-) {
+pi_get_tracks <- function(song_name = "Possum", per_page = 100) {
 
-  # Check that at least one argument is not null
-  # stop_if_all(apikey, is.null, "You need to specify the API key!")
-  # Chek for internet
-  check_internet()
+  song_slug <- gsub(" ", "-", tolower(song_name))
+  all_tracks <- list()
 
-  # Create the API headers based on supplied arguments.
-  # Accept header hardcoded because apparently phish.in requires this:
-  # https://phish.in/api-docs
+  # Initial request to get total_pages
+  first_url <- sprintf(
+    "https://phish.in/api/v2/tracks?page=1&per_page=%d&sort=date:asc&song_slug=%s",
+    per_page, song_slug
+  )
+  first_response <- GET(first_url)
 
-  sort_dir <- switch(sort_dir,
-                     'ascending'  = 'asc',
-                     'descending' = 'desc')
+  if (status_code(first_response) != 200) {
+    stop("Initial request failed.")
+  }
 
-  res <- .pi_call(what              = 'tracks',
-                  what_specifically = as.character(track),
-                  apikey            = apikey,
-                  sort_dir          = sort_dir,
-                  sort_atr          = sort_atr,
-                  per_page          = per_page,
-                  sbd_only          = sbd_only,
-                  page              = page)
+  first_content <- content(first_response, as = "parsed", type = "application/json")
+  total_pages <- first_content$total_pages
 
-  if(res$status_code != 200) stop("Something went wrong\nStatus code: ",
-                                  res$status_code)
-  data <- httr::content(res)$data
+  # Loop over all pages
+  for (page in 1:total_pages) {
 
-  # Modify .track_list_to_df in phishin_utils.R to get more/less output as needed.
-  # The current iteration is written for consistency w/ pi_get_songs() (same col
-  # names, dims, etc.)
+    url <- sprintf(
+      "https://phish.in/api/v2/tracks?page=%d&per_page=%d&sort=date:asc&song_slug=%s",
+      page, per_page, song_slug
+    )
 
-  out <- .track_list_to_df(data)
+    response <- GET(url)
 
-  return(out)
+    if (status_code(response) != 200) {
+      warning(sprintf("Failed on page %d", page))
+      next
+    }
 
+    tracks <- content(response, as = "parsed", type = "application/json")$tracks
+
+    tracks_df <- map_dfr(tracks, function(track) {
+      tibble(
+        id = track$id,
+        title = track$title,
+        show_date = track$show_date,
+        duration_sec = track$duration,
+        duration_min = round(track$duration / 60000, 2),
+        venue = track$venue_name,
+        location = track$venue_location,
+        mp3_url = track$mp3_url,
+        tags = if (!is.null(track$tags)) paste(map_chr(track$tags, "name"), collapse = ", ") else NA,
+        taper_notes = track$show$taper_notes %||% NA
+      )
+    })
+
+    all_tracks[[page]] <- tracks_df
+  }
+
+  # Combine all pages into a single dataframe
+  return(bind_rows(all_tracks))
 }

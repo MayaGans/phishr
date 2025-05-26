@@ -17,7 +17,6 @@ pn_get_setlist <- function(apikey = getOption('phishnet_key'),
   check_internet()
 
   # Create the API call based on supplied arguments
-
   res <- httr::GET(
     paste0(
       "https://api.phish.net/v5/",
