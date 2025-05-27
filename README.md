@@ -6,14 +6,11 @@
  
 This is a package to extract data from the Phish.net and phish.in APIs! You can use this package to search for Phish data for:
  * Setlists (both)
+ * Dates (both)
  * Show ratings (.net only)
  * Jamchart entries [.net only]
- * Eras (.in only)
- * Years (.in only)
  * Songs (.in only)
- * Tours (.in only)
  * Venues (.in only)
- * Tags (.in only, used to highlight specific content, see [here](https://phish.in/tags) for more details)
  
  
 
