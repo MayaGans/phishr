@@ -1,3 +1,6 @@
+#' Get Show Rating
+#'
+#'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON

@@ -7,20 +7,17 @@
 #' The functions here are specific to each type of query that can be sent to the
 #' API - all are prefixed with \code{pi_*}
 #'
+#' @importFrom purrr map_dfr
+#' @importFrom tibble tibble
+#' @importFrom dplyr bind_rows
+#'
 #' @export
 
-pi_get_all_songs <- function(per_page = 1000) {
-
-  endpoint <- sprintf("https://phish.in/api/v2/songs")
-  response <- GET(endpoint)
+pi_get_all_songs <- function(per_page = 100) {
   all_songs <- list()
 
-  # Initial request to get total_pages
-  first_url <- sprintf(
-    "https://phish.in/api/v2/tracks?page=1&per_page=%d&sort=date:asc",
-    per_page
-  )
-
+  # Initial request to get total pages
+  first_url <- sprintf("https://phish.in/api/v2/songs?page=1&per_page=%d", per_page)
   first_response <- GET(first_url)
 
   if (status_code(first_response) != 200) {
@@ -30,14 +27,16 @@ pi_get_all_songs <- function(per_page = 1000) {
   first_content <- content(first_response, as = "parsed", type = "application/json")
   total_pages <- first_content$total_pages
 
-  # Loop over all pages
+  # Initialize progress bar
+  pb <- progress_bar$new(
+    format = "Fetching [:bar] :current/:total pages (:percent) eta: :eta",
+    total = total_pages,
+    clear = FALSE,
+    width = 60
+  )
+
   for (page in 1:total_pages) {
-
-    url <- sprintf(
-      "https://phish.in/api/v2/tracks?page=%d&per_page=%d&sort=date:asc",
-      page, per_page
-    )
-
+    url <- sprintf("https://phish.in/api/v2/songs?page=%d&per_page=%d", page, per_page)
     response <- GET(url)
 
     if (status_code(response) != 200) {
@@ -45,24 +44,22 @@ pi_get_all_songs <- function(per_page = 1000) {
       next
     }
 
-    songs <- content(response, as = "parsed", type = "application/json")$tracks
+    songs <- content(response, as = "parsed", type = "application/json")$songs
 
-    songs_df <- map_dfr(songs, function(track) {
-
-      song <- track$songs[[1]]
-
+    songs_df <- map_dfr(songs, function(song) {
       tibble(
         slug = song$slug,
         title = song$title,
-        artist = song$artist %||% 'Phish',
+        artist = song$artist %||% "Phish",
         tracks_count = song$tracks_count
       )
     })
 
     all_songs[[page]] <- songs_df
+    pb$tick()
   }
 
-  # Combine all pages into a single dataframe
   return(bind_rows(all_songs))
-
 }
+
+

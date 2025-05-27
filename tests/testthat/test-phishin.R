@@ -5,9 +5,16 @@ test_that('pi_get_all_songs is working', {
   skip_on_cran()
   skip_on_travis()
 
+  all_songs <- pi_get_all_songs()
+
   expect_equal(
-    length(pi_get_all_songs()),
-    # TODO
+    nrow(all_songs),
+    950
+  )
+
+  expect_equal(
+    colnames(all_songs),
+    c('slug', 'title', 'artist', 'tracks_count')
   )
 
 })
@@ -37,12 +44,12 @@ test_that('pi_get_show_by_date is working', {
   skip_on_travis()
 
   expect_equal(
-    length(pi_get_dates("1999-12-31")),
+    length(pi_get_show_by_date("1999-12-31")),
     19
   )
 
   expect_equal(
-    names(pi_get_dates("1999-12-31")),
+    names(pi_get_show_by_date("1999-12-31")),
     c(
       "id",
       "date",

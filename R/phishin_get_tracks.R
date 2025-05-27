@@ -1,8 +1,13 @@
 #' @title Query the Phish.in API for all performances of a song
 #' @description Returns metadata about every time a given song was performed.
+#'
+#' @importFrom purrr map_chr
+#'
 #' @param song_name Name of the song, e.g. "Possum"
 #' @param per_page Results per page (max 100 recommended)
+#'
 #' @return A data frame with performance details
+#'
 #' @export
 
 pi_get_all_times_played <- function(song_name = "Possum", per_page = 100) {
@@ -23,6 +28,14 @@ pi_get_all_times_played <- function(song_name = "Possum", per_page = 100) {
 
   first_content <- content(first_response, as = "parsed", type = "application/json")
   total_pages <- first_content$total_pages
+
+  # Initialize progress bar
+  pb <- progress_bar$new(
+    format = "Fetching [:bar] :current/:total pages (:percent) eta: :eta",
+    total = total_pages,
+    clear = FALSE,
+    width = 60
+  )
 
   # Loop over all pages
   for (page in 1:total_pages) {
@@ -57,6 +70,7 @@ pi_get_all_times_played <- function(song_name = "Possum", per_page = 100) {
     })
 
     all_tracks[[page]] <- tracks_df
+    pb$tick()
   }
 
   # Combine all pages into a single dataframe

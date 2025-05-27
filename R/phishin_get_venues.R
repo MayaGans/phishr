@@ -19,6 +19,14 @@ pi_get_all_venues <- function(per_page = 100) {
   first_content <- content(first_response, as = "parsed", type = "application/json")
   total_pages <- first_content$total_pages
 
+  # Initialize progress bar
+  pb <- progress_bar$new(
+    format = "Fetching [:bar] :current/:total pages (:percent) eta: :eta",
+    total = total_pages,
+    clear = FALSE,
+    width = 60
+  )
+
   all_venues <- list()
 
   # Loop over all pages
@@ -52,6 +60,7 @@ pi_get_all_venues <- function(per_page = 100) {
     })
 
     all_venues[[page]] <- venues_df
+    pb$tick()
   }
 
   # Combine all pages into a single dataframe

@@ -1,3 +1,5 @@
+#' Get Show Notes
+#'
 #' @importFrom attempt stop_if_all
 #' @importFrom purrr compact
 #' @importFrom jsonlite fromJSON

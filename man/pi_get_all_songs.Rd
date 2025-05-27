@@ -4,7 +4,7 @@
 \alias{pi_get_all_songs}
 \title{Get All Songs}
 \usage{
-pi_get_all_songs(per_page = 1000)
+pi_get_all_songs(per_page = 100)
 }
 \value{
 a data.frame with the slug, names,
