@@ -2,7 +2,7 @@
 
 <img align="right" width="100" height="110" src="man/phishr_hex.png">
 
-## phishr
+# phishr
  
 This is a package to extract data from the Phish.net and phish.in APIs! You can use this package to search for Phish data for:
  * Setlists (both)
@@ -11,8 +11,6 @@ This is a package to extract data from the Phish.net and phish.in APIs! You can 
  * Jamchart entries [.net only]
  * Songs (.in only)
  * Venues (.in only)
- 
- 
 
 # Example: What's the deal with Big Cypress?
  
