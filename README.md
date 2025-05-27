@@ -66,6 +66,58 @@ phishr::pn_get_show_rating(phishnet_key, "1999-12-31")
 
 [1] 4.7568
  ```
+ 
+# Phish.in
+
+We can also do this using Phish.in which doesnt require an API key
+
+```
+pi_get_show_by_date("1999-12-31")
+```
+
+You can get a data.frame of all show dates this way: 
+
+```
+pi_get_all_dates()
+
+> date       tour_name          venue_name                  
+   <chr>      <chr>              <chr>                       
+ 1 2025-04-27 Spring Tour 2025   Hollywood Bowl              
+ 2 2025-04-26 Spring Tour 2025   Hollywood Bowl              
+ 3 2025-04-25 Spring Tour 2025   Hollywood Bowl              
+ 4 2025-04-23 Spring Tour 2025   Bill Graham Civic Auditorium
+ 5 2025-04-22 Spring Tour 2025   Bill Graham Civic Auditorium
+ 6 2025-04-20 Spring Tour 2025   Moda Center                 
+```
+
+You can also get song durations for every time it was played using the `pi_get_all_times_played` function
+
+```
+> pi_get_all_times_played("you-enjoy-myself")
+Fetching [=======================] 6/6 pages (100%) eta:  0s
+# A tibble: 575 × 10
+      id title            show_date  duration_sec duration_min venue                        location mp3_url tags  taper_notes
+   <int> <chr>            <chr>             <int>        <dbl> <chr>                        <chr>    <chr>   <chr> <chr>      
+ 1 26831 You Enjoy Myself 1986-02-03       609254        10.2  Hunt's                       Burling… https:… "Jam… "Phish\n2-…
+ 2 26820 You Enjoy Myself 1986-04-01       825391        13.8  Hunt's                       Burling… https:… ""    "04-01-86 …
+ 3    68 You Enjoy Myself 1986-04-25       625398        10.4  University of Vermont        Burling… https:… "SBD" "Phish-\r\…
+ 4    81 You Enjoy Myself 1986-10-15       645486        10.8  Hunt's                       Burling… https:… "SBD" "Phish\r\n…
+ 5   148 You Enjoy Myself 1986-12-06       653322        10.9  The Ranch                    South B… https:… "SBD" "PHISH\n\n…
+ 6   201 You Enjoy Myself 1987-03-23       659487        11.0  Nectar's                     Burling… https:… "SBD… "Phish 3/2…
+```
+
+We can also get information on all venues including their lat and log using `pi_get_all_venues`:
+
+```
+Fetching [=======================] 7/7 pages (100%) eta:  0s
+# A tibble: 674 × 7
+   name                                    latitude longitude city        state                  country location             
+   <chr>                                      <dbl>     <dbl> <chr>       <chr>                  <chr>   <chr>                
+ 1 13x13 Club                                  35.2     -80.8 Charlotte   NC                     USA     Charlotte, NC        
+ 2 1stBank Center                              39.9    -105.  Broomfield  CO                     USA     Broomfield, CO   
+```
+
+# Contributing
 
 Please (so that we have no regrets), note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.

@@ -7,7 +7,7 @@
 #' The functions here are specific to each type of query that can be sent to the
 #' API - all are prefixed with \code{pi_*}
 #'
-#' @importFrom purrr map_dfr
+#' @importFrom purrr map_dfr keep
 #' @importFrom tibble tibble
 #' @importFrom dplyr bind_rows
 #'
